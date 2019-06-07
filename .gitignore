@@ -1,0 +1,5 @@
+node_modules
+raspi-resources
+.vscode
+*.csv
+*.zip
