@@ -5,7 +5,7 @@ import os, requests, datetime
  
 class Timelapse:
     def __init__(self):
-        self.imageLocation = '/home/pi/gage-cam/images'
+        self.imageLocation = '/home/pi/gage-cam/camera/images'
         self.captureInterval = 300
         self.uploadURL = 'https://ny.water.usgs.gov/maps/gage-cam/upload-to-database.php'
         #call main function

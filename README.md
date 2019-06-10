@@ -74,6 +74,9 @@ Delete 'pi' user:
 Update rasbian:  
 `sudo apt-get update` then `sudo apt-get upgrade`
 
+Install git
+`sudo apt-get install git python-picamera`
+
 ### Disable unneeded features for battery consumption
 
 Add lines boot configuration file
