@@ -1,5 +1,6 @@
 from time import sleep
-import subprocess, os, requests, datetime
+from picamera import PiCamera
+import os, requests, datetime
  
  
 class Timelapse:
@@ -19,10 +20,15 @@ class Timelapse:
         while True:
             print 'STARTING IMAGE CAPTURE'
             filename = '{}/{}-Continuous.jpg'.format(self.imageLocation, self.getDateTime())
-            command = 'fswebcam -i 0 -d v4l2:/dev/video0 -r 1280x720 --fps 10 -S 2 --jpeg 100 --shadow --title "gage-cam" --subtitle "Ruler Test #1" --info "Troy, NY" --save ' + filename
-            process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
- 
-            process.wait()
+
+            #capture image
+            camera = PiCamera()
+            camera.resolution = (1024, 768)
+
+            # Camera warm-up time
+            sleep(2)
+            camera.capture(filename)
+            camera.close()
             
             date_time_string = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             print 'DATE',date_time_string
@@ -30,7 +36,12 @@ class Timelapse:
             values = {'site_id': 'martysOffice', 'date_time': date_time_string,'water_level': None}
             print 'STARTING IMAGE UPLOAD', values
             r = requests.post(self.uploadURL, files=files, data=values)
-            print r.text
+            if r:
+                print 'UPLOAD TO SERVER WAS SUCCESSFUL'
+            else:
+                'UPLOAD UNSUCCESSFUL', r.text
+
+            print 'WAITING',self.captureInterval,'FOR NEXT IMAGE...'
             sleep(self.captureInterval) # Wait
  
 Timelapse()
