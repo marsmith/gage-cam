@@ -3,7 +3,7 @@ from time import sleep
 from picamera import PiCamera
 import os, requests, datetime, logging
 
-logging.basicConfig(filename='camera.log', level=logging.DEBUG, format = '%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
+logging.basicConfig(filename='/home/pi/gage-cam/camera/camera.log', level=logging.DEBUG, format = '%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
