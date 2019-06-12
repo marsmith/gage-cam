@@ -44,10 +44,10 @@ class Capture:
 
         logging.info("Captured Image: " + filename) 
 
-        print 'STARTING IMAGE UPLOAD', values
-
         #create upload body
         files = {'fileToUpload': open(filename, 'rb')}
+
+        logging.info("Starting image upload: " + filename) 
 
         #upload
         #self.uploadToDB(files)
