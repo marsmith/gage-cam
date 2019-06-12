@@ -1,0 +1,6 @@
+2019-06-12 14:55:58,599 INFO       MainProcess root Starting image capture
+2019-06-12 14:56:01,681 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-12_145558-Capture.jpg
+2019-06-12 14:56:01,691 INFO       MainProcess root Starting image upload
+2019-06-12 14:56:01,841 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-12 14:56:14,847 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-12 14:56:14,898 INFO       MainProcess root Image successfully uploaded as file

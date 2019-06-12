@@ -1,7 +1,15 @@
+
 from time import sleep
 from picamera import PiCamera
 import os, requests, datetime, logging
- 
+
+logging.basicConfig(filename='camera.log', level=logging.DEBUG, format = '%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
+console = logging.StreamHandler()
+console.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+
 class Capture:
     def __init__(self):
         self.imageLocation = '/home/pi/gage-cam/camera/images'
@@ -9,23 +17,19 @@ class Capture:
         self.uploadToDBURL = self.phpPath + 'upload-to-database.php'
         self.uploadToFileURL = self.phpPath + 'upload-as-file.php'
 
-        #setup logging
-        logging.getLogger().addHandler(logging.StreamHandler())
-        logging.basicConfig(level = logging.INFO, filename = "camera.log", format = '%(asctime)s  %(levelname)-10s %(processName)s  %(name)s %(message)s')
-
         #call main function
         self.singleCaptureImage()
- 
+
     def getDateTime(self):
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
- 
+
     def singleCaptureImage(self):
         if not os.path.exists(self.imageLocation):
             os.makedirs(self.imageLocation)
 
-        print 'STARTING IMAGE CAPTURE'
+        logging.info("Starting image capture")
         filename = '{}/{}-Capture.jpg'.format(self.imageLocation, self.getDateTime())
-    
+
         #capture image
         camera = PiCamera()
         camera.resolution = (1024, 768)
@@ -33,27 +37,26 @@ class Capture:
         # Camera warm-up time
         sleep(2)
         try:
-            # do something with the camera
-            camera.capture(filename)
-            pass
+		camera.capture(filename)
+		pass
         except:
-            print 'IMAGE CAPTURE FAILED', values
-            logging.error("Image capture failed")
+		logging.error("Image capture failed")
         finally:
-            camera.close()
+		camera.close()
 
-        logging.info("Captured Image: " + filename) 
+        logging.info("Captured Image: " + filename)
 
         #create upload body
-        files = {'fileToUpload': open(filename, 'rb')}
+        file_to_upload = {'fileToUpload': open(filename, 'rb')}
 
-        logging.info("Starting image upload: " + filename) 
+        logging.info("Starting image upload")
 
         #upload
-        #self.uploadToDB(files)
-        self.uploadToFile(files)
-        
-    def uploadToDB(self, files):
+        #self.uploadToDB(file_to_upload)
+        self.uploadToFile(file_to_upload)
+
+    def uploadToDB(self, file_to_upload):
+
         #time string for database
         date_time_string = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -63,25 +66,20 @@ class Capture:
         #start upload
         r = requests.post(self.uploadToDBURL, files=files, data=values)
         if r:
-            print 'UPLOAD TO DATABASE WAS SUCCESSFUL'
-            logging.info("Image successfully uploaded to database") 
+		logging.info("Image successfully uploaded to database")
         else:
-            'UPLOAD UNSUCCESSFUL', r.text
-            logging.error("Database upload unsuccessful: " + r.status_code) 
-            
-        print 'SCRIPT FINISHED'
+		'UPLOAD UNSUCCESSFUL', r.text
+		logging.error("Database upload unsuccessful: " + r.status_code)
 
-    def uploadToFile(self, file):
+    def uploadToFile(self, file_to_upload):
 
         #start upload
-        r = requests.post(self.uploadToFileURL, files=files)
+        r = requests.post(self.uploadToFileURL, files=file_to_upload)
         if r:
-            print 'UPLOAD TO SERVER WAS SUCCESSFUL'
-            logging.info("Image successfully uploaded as file") 
+		logging.info("Image successfully uploaded as file")
         else:
-            'UPLOAD UNSUCCESSFUL', r.text
-            logging.error("File upload unsuccessful: " + r.status_code) 
-            
-        print 'SCRIPT FINISHED'
+		logging.error("File upload unsuccessful: " + r.status_code)
 
+
+#call main class
 Capture()
