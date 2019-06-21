@@ -3,3 +3,4 @@ raspi-resources
 .vscode
 *.csv
 *.zip
+*.db

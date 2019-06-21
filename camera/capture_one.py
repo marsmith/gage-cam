@@ -30,6 +30,9 @@ class Capture:
         logging.info("Starting image capture")
         filename = '{}/{}-Capture.jpg'.format(self.imageLocation, self.getDateTime())
 
+        if (self.checkForDark()):
+            return
+
         #capture image
         camera = PiCamera()
         camera.resolution = (1024, 768)
@@ -79,6 +82,15 @@ class Capture:
 		logging.info("Image successfully uploaded as file")
         else:
 		logging.error("File upload unsuccessful: " + r.status_code)
+
+    def checkIfDark():
+        start = datetime.time(22, 0, 0)
+        end = datetime.time(4, 0, 0)
+        now = datetime.datetime.now().time()
+        if start <= end:
+            return start <= now <= end
+        else:
+            return start <= now or now <= end
 
 
 #call main class

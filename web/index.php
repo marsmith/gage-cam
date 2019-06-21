@@ -2,7 +2,7 @@
 <!doctype html>
 <html>
     <head>
-		<link href='https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/1.17.1/simplelightbox.min.css' rel='stylesheet'>
+		<!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/1.17.1/simplelightbox.min.css' rel='stylesheet'>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/1.17.1/simple-lightbox.min.js"></script>
         
@@ -35,28 +35,40 @@
 		  width: 100%;
 		}
 		
-		</style>
+		</style> -->
     </head>
     <body>
         <div class='container'>
             <div class="gallery">
 
             <?php
-			  $server = $_SERVER['SERVER_NAME'];
-			  if (strpos($server,'staging') !== false) {
-				$dbh = new PDO('sqlite:/afs/.usgs.gov/www/staging-ny.water/htdocs/maps/gage-cam/gage-cam.db');
-			  } else {
-				$dbh = new PDO('sqlite:/afs/.usgs.gov/www/ny.water/htdocs/maps/gage-cam/gage-cam.db');
-			  }
+							// $server = $_SERVER['SERVER_NAME'];
+							// if (strpos($server,'staging') !== false) {
+							// $dbh = new PDO('sqlite:/afs/.usgs.gov/www/staging-ny.water/htdocs/maps/gage-cam/gage-cam.db');
+							// } else {
+							// $dbh = new PDO('sqlite:/afs/.usgs.gov/www/ny.water/htdocs/maps/gage-cam/gage-cam.db');
+							// }
 
-                $sql = "SELECT * FROM images";
-                $query = $dbh->query($sql);
+							// $sql = "SELECT * FROM images";
+							// $query = $dbh->query($sql);
 
-                foreach ($query as $image) {
-                    //echo '<img src="img.php?name='.$image['image_name'].'" /><br>';
-                    echo ' <a href="img.php?name='.$image['image_name'].'"><img src="img.php?name='.$image['image_name'].'" alt="" title=""/>
-                    </a>';
-                }
+							// foreach ($query as $image) {
+							// 		//echo '<img src="img.php?name='.$image['image_name'].'" /><br>';
+							// 		echo ' <a href="img.php?name='.$image['image_name'].'"><img src="img.php?name='.$image['image_name'].'" alt="" title=""/>
+							// 		</a>';
+							// }
+
+							
+
+							$files = glob("uploads/*.jpg");
+
+							for ($i=0; $i<count($files); $i++) {
+									$image = $files[$i];
+									print $image ."<br />";
+									echo '<img src="'.$image .'" alt="Random image" />'."<br /><br />";
+							}
+
+
             ?>
 
 			</div>
@@ -64,12 +76,12 @@
 
         
         <!-- Script -->
-        <script type='text/javascript'>
+        <!-- <script type='text/javascript'>
         $(document).ready(function(){
 
             // Intialize gallery
             var $gallery = $('.gallery a').simpleLightbox();
         });
-        </script>
+        </script> -->
     </body>
 </html>
