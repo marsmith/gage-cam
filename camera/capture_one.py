@@ -85,7 +85,7 @@ class Capture:
         else:
 		logging.error("File upload unsuccessful: " + r.status_code)
 
-    def checkForDark():
+    def checkForDark(self):
         start = datetime.time(22, 0, 0)
         end = datetime.time(4, 0, 0)
         now = datetime.datetime.now().time()
