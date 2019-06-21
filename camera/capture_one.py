@@ -27,11 +27,13 @@ class Capture:
         if not os.path.exists(self.imageLocation):
             os.makedirs(self.imageLocation)
 
-        logging.info("Starting image capture")
-        filename = '{}/{}-Capture.jpg'.format(self.imageLocation, self.getDateTime())
-
         if (self.checkForDark()):
+            logging.info("Skipping image capture because its dark: " + filename)
             return
+
+        logging.info("It's not dark, starting image capture")
+
+        filename = '{}/{}-Capture.jpg'.format(self.imageLocation, self.getDateTime())
 
         #capture image
         camera = PiCamera()
