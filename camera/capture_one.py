@@ -1,8 +1,10 @@
 
 from time import sleep
 from picamera import PiCamera
+from astral import Astral
 import os, requests, datetime, logging
 
+#set up logging
 logging.basicConfig(filename='/home/pi/gage-cam/camera/camera.log', level=logging.DEBUG, format = '%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
@@ -27,12 +29,6 @@ class Capture:
         if not os.path.exists(self.imageLocation):
             os.makedirs(self.imageLocation)
 
-        if (self.checkForDark()):
-            logging.info("Skipping image capture because its dark: " + filename)
-            return
-
-        logging.info("It's not dark, starting image capture")
-
         filename = '{}/{}-Capture.jpg'.format(self.imageLocation, self.getDateTime())
 
         #capture image
@@ -42,23 +38,61 @@ class Capture:
         # Camera warm-up time
         sleep(2)
         try:
-		camera.capture(filename)
-		pass
+                #need to turn on LEDs if between sunset and dawn
+                if (self.checkForDark()):
+                        logging.info("Using LEDs for photo because its dark")
+
+                        import smbus
+
+                        bus = smbus.SMBus(1)
+
+                        DEVICE_ADDRESS        = 0x70
+                        LED_CONTROL_ALL_WHITE = 0x5a
+                        LED_CONTROL_ALL_IR    = 0xa5
+                        LED_CONTROL_ALL       = 0xFF
+                        LED_CONTROL_OFF       = 0x00
+                        LED_GAIN_REGISTER     = 0x09
+                        gain = 15
+ 
+                        #set gain
+                        bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
+
+                        #turn on all LEDs
+                        bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL)
+
+                        #capture image
+                        camera.capture(filename)
+
+                        #reset LED gain
+                        bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
+                        
+                        #turn off LEDs
+                        bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
+                        
+                #otherwise just normal capture
+                else:
+                        logging.info("No LED needed taking normal photo")
+                        #capture image
+                        camera.capture(filename)
+                        
+                
+                logging.info("Captured Image: " + filename)
+
+                
+                #create upload body
+                file_to_upload = {'fileToUpload': open(filename, 'rb')}
+
+                logging.info("Starting image upload")
+
+                #upload
+                #self.uploadToDB(file_to_upload)
+                self.uploadToFile(file_to_upload)
+                pass
         except:
-		logging.error("Image capture failed")
+                logging.error("Image capture failed")
         finally:
-		camera.close()
+                camera.close()
 
-        logging.info("Captured Image: " + filename)
-
-        #create upload body
-        file_to_upload = {'fileToUpload': open(filename, 'rb')}
-
-        logging.info("Starting image upload")
-
-        #upload
-        #self.uploadToDB(file_to_upload)
-        self.uploadToFile(file_to_upload)
 
     def uploadToDB(self, file_to_upload):
 
@@ -71,24 +105,37 @@ class Capture:
         #start upload
         r = requests.post(self.uploadToDBURL, files=files, data=values)
         if r:
-		logging.info("Image successfully uploaded to database")
+                logging.info("Image successfully uploaded to database")
         else:
-		'UPLOAD UNSUCCESSFUL', r.text
-		logging.error("Database upload unsuccessful: " + r.status_code)
+                'UPLOAD UNSUCCESSFUL', r.text
+                logging.error("Database upload unsuccessful: " + r.status_code)
 
     def uploadToFile(self, file_to_upload):
 
         #start upload
         r = requests.post(self.uploadToFileURL, files=file_to_upload)
         if r:
-		logging.info("Image successfully uploaded as file")
+                logging.info("Image successfully uploaded as file")
         else:
-		logging.error("File upload unsuccessful: " + r.status_code)
+                logging.error("File upload unsuccessful: " + r.status_code)
 
     def checkForDark(self):
-        start = datetime.time(22, 0, 0)
-        end = datetime.time(4, 0, 0)
-        now = datetime.datetime.now().time()
+            
+        #get dawn and sunset times
+        city_name = 'Albany'
+        a = Astral()
+        a.solar_depression = 'civil'
+        city = a[city_name]
+        sun = city.sun(date=datetime.datetime.now(), local=True)
+        
+        end = sun['dusk'].replace(tzinfo=None)
+        start = sun['dawn'].replace(tzinfo=None)
+        #print('Dawn:    %s' % str(end))
+        #print('Dusk:    %s' % str(start))
+        now = datetime.datetime.now()
+
+        print(start,end,now)
+        
         if start <= end:
             return start <= now <= end
         else:

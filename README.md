@@ -75,7 +75,10 @@ Update rasbian:
 `sudo apt-get update` then `sudo apt-get upgrade`
 
 Install git
-`sudo apt-get install git python-picamera`
+`sudo apt-get install git python3-picamera`
+
+install python dependencies
+`pip3 install astral`
 
 ### Disable unneeded features for battery consumption
 
