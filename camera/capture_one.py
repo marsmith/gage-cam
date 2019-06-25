@@ -128,13 +128,11 @@ class Capture:
         city = a[city_name]
         sun = city.sun(date=datetime.datetime.now(), local=True)
         
-        end = sun['dusk'].replace(tzinfo=None)
-        start = sun['dawn'].replace(tzinfo=None)
-        #print('Dawn:    %s' % str(end))
-        #print('Dusk:    %s' % str(start))
+        start = sun['dusk'].replace(tzinfo=None)
+        end = sun['dawn'].replace(tzinfo=None)
         now = datetime.datetime.now()
 
-        print(start,end,now)
+        #print(start,end,now)
         
         if start <= end:
             return start <= now <= end
