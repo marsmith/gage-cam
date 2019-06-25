@@ -1,8 +1,6 @@
-
-from time import sleep
 from picamera import PiCamera
 from astral import Astral
-import os, requests, datetime, logging
+import os, requests, datetime, logging, time
 
 #set up logging
 logging.basicConfig(filename='/home/pi/gage-cam/camera/camera.log', level=logging.DEBUG, format = '%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
@@ -36,7 +34,8 @@ class Capture:
         camera.resolution = (1024, 768)
 
         # Camera warm-up time
-        sleep(2)
+        time.sleep(2)
+
         try:
                 #need to turn on LEDs if between sunset and dawn
                 if (self.checkForDark()):
@@ -62,7 +61,10 @@ class Capture:
 
                         #capture image
                         camera.capture(filename)
-
+                        
+			#sleep a few seconds with LEDs on
+                        time.sleep(3)
+			
                         #reset LED gain
                         bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
                         
