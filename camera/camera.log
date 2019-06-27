@@ -4,3 +4,41 @@
 2019-06-25 14:25:13,418 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
 2019-06-25 14:25:21,523 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
 2019-06-25 14:25:21,632 INFO       MainProcess root Image successfully uploaded as file
+2019-06-25 14:28:07,516 INFO       MainProcess root Using LEDs for photo because its dark
+2019-06-25 14:28:11,151 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-25_142804-Capture.jpg
+2019-06-25 14:28:11,159 INFO       MainProcess root Starting image upload
+2019-06-25 14:28:11,403 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-25 14:28:15,370 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-25 14:28:15,464 INFO       MainProcess root Image successfully uploaded as file
+2019-06-25 14:31:16,095 INFO       MainProcess root Using LEDs for photo because its dark
+2019-06-25 14:31:19,711 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-25_143112-Capture.jpg
+2019-06-25 14:31:19,720 INFO       MainProcess root Starting image upload
+2019-06-25 14:31:19,987 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-25 14:31:22,497 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-25 14:31:22,593 INFO       MainProcess root Image successfully uploaded as file
+2019-06-25 14:32:29,667 INFO       MainProcess root No LED needed taking normal photo
+2019-06-25 14:32:30,300 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-25_143226-Capture.jpg
+2019-06-25 14:32:30,307 INFO       MainProcess root Starting image upload
+2019-06-25 14:32:30,616 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-25 14:32:33,195 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-25 14:32:33,295 INFO       MainProcess root Image successfully uploaded as file
+2019-06-25 15:11:18,315 INFO       MainProcess root No LED needed taking normal photo
+2019-06-25 15:11:18,917 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-25_151115-Capture.jpg
+2019-06-25 15:11:18,921 INFO       MainProcess root Starting image upload
+2019-06-25 15:11:19,136 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-25 15:11:21,398 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-25 15:11:21,468 INFO       MainProcess root Image successfully uploaded as file
+2019-06-25 15:12:22,167 INFO       MainProcess root Using LEDs for photo because its dark
+2019-06-25 15:12:22,212 ERROR      MainProcess root Image capture failed
+2019-06-27 12:32:13,795 INFO       MainProcess root No LED needed taking normal photo
+2019-06-27 12:32:14,280 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-27_123209-Capture.jpg
+2019-06-27 12:32:14,284 INFO       MainProcess root Starting image upload
+2019-06-27 12:32:14,467 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-27 12:32:16,040 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-27 12:32:16,092 INFO       MainProcess root Image successfully uploaded as file
+2019-06-27 12:58:20,795 INFO       MainProcess root Using LEDs for photo because its dark
+2019-06-27 12:58:24,390 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-06-27_125816-Capture.jpg
+2019-06-27 12:58:24,395 INFO       MainProcess root Starting image upload
+2019-06-27 12:58:24,600 DEBUG      MainProcess requests.packages.urllib3.connectionpool Starting new HTTPS connection (1): ny.water.usgs.gov
+2019-06-27 12:58:26,923 DEBUG      MainProcess requests.packages.urllib3.connectionpool https://ny.water.usgs.gov:443 "POST /maps/gage-cam/upload-as-file.php HTTP/1.1" 200 260
+2019-06-27 12:58:26,968 INFO       MainProcess root Image successfully uploaded as file
