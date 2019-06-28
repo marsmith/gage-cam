@@ -40,7 +40,7 @@ class Capture:
 
         # capture image
         camera = PiCamera()
-        camera.resolution = (1024, 768)
+        camera.resolution = (3280, 2464)
 
         # Camera warm-up time
         time.sleep(2)
@@ -50,38 +50,34 @@ class Capture:
             if (self.checkForDark()):
                 logging.info("Using LEDs for photo because its dark")
 
-                import smbus
+                #all LED settings here
+                # import smbus
+                # bus = smbus.SMBus(1)
+                # DEVICE_ADDRESS = 0x70
+                # LED_CONTROL_ALL_WHITE = 0x5a
+                # LED_CONTROL_ALL_IR = 0xa5
+                # LED_CONTROL_ALL = 0xFF
+                # LED_CONTROL_OFF = 0x00
+                # LED_GAIN_REGISTER = 0x09
+                # gain = 15
+                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
+                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL)
+                # time.sleep(2)
 
-                bus = smbus.SMBus(1)
-
-                DEVICE_ADDRESS = 0x70
-                LED_CONTROL_ALL_WHITE = 0x5a
-                LED_CONTROL_ALL_IR = 0xa5
-                LED_CONTROL_ALL = 0xFF
-                LED_CONTROL_OFF = 0x00
-                LED_GAIN_REGISTER = 0x09
-                gain = 15
-
-                # set gain
-                bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
-
-                # turn on all LEDs
-                bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL)
-
-                # sleep a few seconds with LEDs on
-                time.sleep(2)
+                #modify camera exposure for night
+                camera.brightness = 50
+                camera.sharpness = 50
+                camera.saturation = -75
+                camera.ISO = 1200
+                camera.shutter_speed = 2000000
 
                 # capture image
                 camera.capture(filename)
 
-                # sleep a few seconds with LEDs on
-                time.sleep(1)
-
-                # reset LED gain
-                bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
-
-                # turn off LEDs
-                bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
+                #reset LED
+                #time.sleep(1)
+                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
+                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
 
             # otherwise just normal capture
             else:
