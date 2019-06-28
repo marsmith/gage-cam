@@ -41,6 +41,7 @@ class Capture:
         # capture image
         camera = PiCamera()
         camera.resolution = (3280, 2464)
+        #camera.resolution = (1024, 768)
 
         # Camera warm-up time
         time.sleep(2)
