@@ -68,7 +68,7 @@ class Capture:
                 camera.brightness = 50
                 camera.sharpness = 50
                 camera.saturation = -75
-                camera.ISO = 800
+                camera.ISO = 1200
                 camera.shutter_speed = 2000000
 
                 # capture image
