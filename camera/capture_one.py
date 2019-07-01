@@ -40,8 +40,9 @@ class Capture:
 
         # capture image
         camera = PiCamera()
-        camera.resolution = (3280, 2464)
+        #camera.resolution = (3280, 2464)
         #camera.resolution = (1024, 768)
+        camers.resolution = (1600, 1200)
 
         # Camera warm-up time
         time.sleep(2)
@@ -49,6 +50,10 @@ class Capture:
         try:
             # need to turn on LEDs if between sunset and dawn
             if (self.checkForDark()):
+
+                logging.info("Skipping night photo (for now)")
+                return
+
                 logging.info("Using LEDs for photo because its dark")
 
                 #all LED settings here
