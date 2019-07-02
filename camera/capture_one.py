@@ -93,6 +93,12 @@ class Capture:
 
             logging.info("Captured Image: " + filename)
 
+            camera.close()
+            pass
+        except:
+            logging.error("Image capture failed")
+        finally:
+            
             # create upload body
             file_to_upload = {'fileToUpload': open(filename, 'rb')}
 
@@ -101,11 +107,6 @@ class Capture:
             # upload
             # self.uploadToDB(file_to_upload)
             self.uploadToFile(file_to_upload)
-            pass
-        except:
-            logging.error("Image capture failed")
-        finally:
-            camera.close()
 
     def uploadToDB(self, file_to_upload):
 
