@@ -14,9 +14,8 @@ About project
 
 
   **Software**: 
-  - Rasbian OS image (tesed using **June 2018** release) [here](https://www.raspberrypi.org/downloads/raspbian/)
+  - Rasbian OS image (tesed using **July 2019** release) [here](https://www.raspberrypi.org/downloads/raspbian/)
   - Raspberry Pi image flashing software Etcher [here](https://etcher.io)
-  - Putty SSH Client (optional) [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 
 ## Install raspbian
 
@@ -31,61 +30,37 @@ Once the pi has booted, log in using: user `pi` password `raspberry`
 
 Run `sudo raspi-config` to run raspberry pi config wizard:
 
-- setup and enable wifi [optional] (network options)
-- enable camera
-- enable SSH for remote access (interface options)
-- set keyboard layout (localization options)
-- set timezone (localization options)
-- require user to log in (boot options/ Desktop/CLI)
+- change user password
 
-**Wireless config**:  
-Use `raspi-config` tool network options
+Run setup script
+`wget https://raw.githubusercontent.com/marsmith/gage-cam/master/server-config/server-setup.sh`
 
-Reboot necessary after any network configuration change:  
-`sudo reboot` 
+### Set script to run on startup
 
-Get your pi's IP address, record the IP address from the following command:    
-`hostname -I`
+`sudo nano /etc/rc.local` then add the following before `exit 0`:
 
-## Use SSH for remaining configuration steps
+```bash
+sleep 20
+sudo /usr/bin/python 3 /home/pi/gage-cam/camera/capture_one.py
+shutdown -h +5
+```
 
-Using your SSH client, enter the IP address found above to connect to your Pi:  
-`ssh pi@192.168.1.195`
+### Set GPIO pin 12 to high for power device
 
-### Create a new user
+`sudo nano /boot/config.txt` then add the following at the end:
 
-Add a new user, and delete default 'pi' user:  
- `sudo adduser hawdis`
-
-To make new user part of the sudo group:  
-`sudo adduser hawdis sudo`  
-
-Reboot:  
-`sudo reboot`
-
-Your SSH session will disconnect.  Wait a minute or two and login with Putty again as your new user:  
-`ssh hawdis@192.168.1.195`
-
-Delete 'pi' user:  
-`sudo deluser --remove-home pi`  
-
-### Install system wide app dependencies
-
-Update rasbian:  
-`sudo apt-get update` then `sudo apt-get upgrade`
-
-Install git
-`sudo apt-get install git python3-picamera`
-
-install python dependencies
-`pip3 install astral`
+```bash
+dtoverlay=gpio-poweroff,active_high,gpiopin=26
+dtoverlay=pi3-disable-bt
+dtoverlay=pi3-disable-wifi
+```
 
 ### Disable unneeded features for battery consumption
 
 Add lines boot configuration file
 `sudo nano /boot/config.txt` then add the following:
 
-```
+```bash
 #disable HDMI
 hdmi_blanking=2
 
@@ -104,12 +79,7 @@ To disable HDMI:
 
 Add `/usr/bin/tvservice -o` to `/etc/rc.local` to disable HDMI on boot. `/usr/bin/tvservice -p` to enable
 
-### install and configure gage-cam
 
-clone from github:  
-`git clone https://github.com/marsmith/gage-cam`
-
-### Set script to run on startup
 
 ### Power consumption notes
 Raspian Stretch lite fresh boot, HDMI, keyboard and mouse: 150 Milliamps
@@ -128,4 +98,6 @@ Same with HDMI disabled, Keyboard and mouse unplugged: 80-90 Milliamps
 
 
 
+upload file with curl:
+curl -F 'fileToUpload=@/mnt/c/Users/marsmith/Desktop/IMG_20190607_142957.jpg' https://ny.water.usgs.gov/maps/gage-cam/upload-as-file.php
 
