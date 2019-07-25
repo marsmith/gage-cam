@@ -5,6 +5,7 @@ import requests
 import datetime
 import logging
 import time
+from subprocess import call
 
 # set up logging
 logging.basicConfig(
@@ -38,62 +39,80 @@ class Capture:
         filename = '{}/{}-Capture.jpg'.format(
             self.imageLocation, self.getDateTime())
 
-        # capture image
-        camera = PiCamera()
-        #camera.resolution = (3280, 2464)
-        #camera.resolution = (1024, 768)
-        camera.resolution = (1600, 1200)
 
-        # Camera warm-up time
-        time.sleep(2)
 
         try:
             # need to turn on LEDs if between sunset and dawn
             if (self.checkForDark()):
 
-                logging.info("Skipping night photo (for now)")
-                return
+                #raspistill -w 2592 -h 1944 -ISO 800 -ss 6000000 -br 80 -co 100 -o out.jpeg
+                #raspistill -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o image.jpg
+                call ('raspistill -w 2592 -h 1944 -ISO 800 -ss 6000000 -br 80 -co 100 -o  "{}"'.format(filename), shell=True)
 
-                logging.info("Using LEDs for photo because its dark")
+                # # capture image
+                # camera = PiCamera()
+                # #camera.resolution = (3280, 2464)
+                # #camera.resolution = (1024, 768)
+                # camera.resolution = (1600, 1200)
 
-                #all LED settings here
-                import smbus
-                bus = smbus.SMBus(1)
-                DEVICE_ADDRESS = 0x70
-                LED_CONTROL_ALL_WHITE = 0x5a
-                LED_CONTROL_ALL_IR = 0xa5
-                LED_CONTROL_ALL = 0xFF
-                LED_CONTROL_OFF = 0x00
-                LED_GAIN_REGISTER = 0x09
-                gain = 15
-                bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
-                bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL_IR)
-                time.sleep(2)
+                # # Camera warm-up time
+                # time.sleep(2)
 
-                #modify camera exposure for night
-                camera.brightness = 50
-                camera.sharpness = 50
-                camera.saturation = -75
-                camera.ISO = 1200
-                camera.shutter_speed = 2000000
+                # logging.info("Skipping night photo (for now)")
+                # return
 
-                # capture image
-                camera.capture(filename)
+                # logging.info("Using LEDs for photo because its dark")
 
-                #reset LED
-                time.sleep(1)
-                bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
-                bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
+                # #all LED settings here
+                # import smbus
+                # bus = smbus.SMBus(1)
+                # DEVICE_ADDRESS = 0x70
+                # LED_CONTROL_ALL_WHITE = 0x5a
+                # LED_CONTROL_ALL_IR = 0xa5
+                # LED_CONTROL_ALL = 0xFF
+                # LED_CONTROL_OFF = 0x00
+                # LED_GAIN_REGISTER = 0x09
+                # gain = 15
+                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
+                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL_IR)
+                # time.sleep(2)
+
+                # #modify camera exposure for night
+                # camera.brightness = 50
+                # camera.sharpness = 50
+                # camera.saturation = -75
+                # camera.ISO = 1200
+                # camera.shutter_speed = 2000000
+
+                # # capture image
+                # camera.capture(filename)
+
+                # #reset LED
+                # time.sleep(1)
+                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
+                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
+
+                #camera.close()
 
             # otherwise just normal capture
             else:
                 logging.info("No LED needed taking normal photo")
+
+                 # capture image
+                camera = PiCamera()
+                #camera.resolution = (3280, 2464)
+                #camera.resolution = (1024, 768)
+                camera.resolution = (1600, 1200)
+
+                # Camera warm-up time
+                time.sleep(2)
+
                 # capture image
                 camera.capture(filename)
 
-            logging.info("Captured Image: " + filename)
+                camera.close()
 
-            camera.close()
+            logging.info("Captured Image: " + filename)
             pass
         except:
             logging.error("Image capture failed")
@@ -115,8 +134,7 @@ class Capture:
             datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
         # add values
-        values = {'site_id': 'martysOffice', 'date_time':
-                  date_time_string, 'water_level': None}
+        values = {'site_id': 'martysOffice', 'date_time': date_time_string, 'water_level': None}
 
         # start upload
         r = requests.post(self.uploadToDBURL, files=files, data=values)
