@@ -43,7 +43,7 @@ class Capture:
 
         try:
             # need to turn on LEDs if between sunset and dawn
-            if (self.checkForDark()):
+            if (1==1):
 
                 #raspistill -w 2592 -h 1944 -ISO 800 -ss 6000000 -br 80 -co 100 -o out.jpeg
                 #raspistill -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o image.jpg
