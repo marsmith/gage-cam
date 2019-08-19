@@ -39,15 +39,14 @@ class Capture:
         filename = '{}/{}-Capture.jpg'.format(
             self.imageLocation, self.getDateTime())
 
-
-
         try:
             # need to turn on LEDs if between sunset and dawn
             if (self.checkForDark()):
 
+                print('')
                 #raspistill -w 1600 -h 1200 -ISO 800 -ss 6000000 -br 80 -co 100 -o out.jpeg
                 #raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o image.jpg
-                call ('raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o "{}"'.format(filename), shell=True)
+                #call ('raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o "{}"'.format(filename), shell=True)
 
                 # # capture image
                 # camera = PiCamera()
