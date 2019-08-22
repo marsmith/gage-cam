@@ -150,13 +150,10 @@ class Capture:
             r = requests.post(self.uploadToFileURL, files=file_to_upload)
         except requests.ConnectionError as e:
             logging.error("HTTP Connection Error: " + str(e))
-            continue
         except requests.Timeout as e:
             logging.error("HTTP Timeout: " + str(e))
-            continue
         except requests.RequestException as e:
             logging.error("HTTP Request Exception: " + str(e))
-            continue
         
         if r:
             logging.info("Image successfully uploaded as file")
