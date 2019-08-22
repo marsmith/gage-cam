@@ -37,13 +37,26 @@ Run setup script
 
 ### Set script to run on startup
 
-`sudo nano /etc/rc.local` then add the following before `exit 0`:
+Create new service file: `sudo touch /etc/systemd/system/capture.service`
+Edit file and add the following: `sudo nano /etc/systemd/system/capture.service`
 
-```bash
-sleep 30
-sudo /usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
-#shutdown -h +5
 ```
+[Unit]
+Description=This service runs an image capture script after network is up
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Restrat daemon: `sudo systemctl daemon-reload`
+Start service on boot: `sudo systemctl enable capture`
 
 ### Boot config settings
 ###Set GPIO pin to high for power device
