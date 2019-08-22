@@ -146,11 +146,13 @@ class Capture:
     def uploadToFile(self, file_to_upload):
 
         # start upload
-        r = requests.post(self.uploadToFileURL, files=file_to_upload)
+        try:
+            r = requests.post(self.uploadToFileURL, files=file_to_upload)
+        except requests.exceptions.ConnectionError:
+            logging.error("File upload unsuccessful: " + r.status_code)
+        
         if r:
             logging.info("Image successfully uploaded as file")
-        else:
-            logging.error("File upload unsuccessful: " + r.status_code)
 
     def checkForDark(self):
 

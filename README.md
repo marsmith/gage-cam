@@ -40,17 +40,18 @@ Run setup script
 `sudo nano /etc/rc.local` then add the following before `exit 0`:
 
 ```bash
-sleep 20
-sudo /usr/bin/python 3 /home/pi/gage-cam/camera/capture_one.py
-shutdown -h +5
+sleep 30
+sudo /usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
+#shutdown -h +5
 ```
 
-### Set GPIO pin 12 to high for power device
+### Boot config settings
+###Set GPIO pin to high for power device
 
 `sudo nano /boot/config.txt` then add the following at the end:
 
 ```bash
-dtoverlay=gpio-poweroff,active_high,gpiopin=26
+#dtoverlay=gpio-poweroff,active_high,gpiopin=26
 dtoverlay=pi3-disable-bt
 dtoverlay=pi3-disable-wifi
 ```
@@ -80,7 +81,6 @@ To disable HDMI:
 Add `/usr/bin/tvservice -o` to `/etc/rc.local` to disable HDMI on boot. `/usr/bin/tvservice -p` to enable
 
 
-
 ### Power consumption notes
 Raspian Stretch lite fresh boot, HDMI, keyboard and mouse: 150 Milliamps
 
@@ -96,8 +96,5 @@ Same with HDMI disabled: 160 Milliamps
 
 Same with HDMI disabled, Keyboard and mouse unplugged: 80-90 Milliamps
 
-
-
 upload file with curl:
 curl -F 'fileToUpload=@/mnt/c/Users/marsmith/Desktop/IMG_20190607_142957.jpg' https://ny.water.usgs.gov/maps/gage-cam/upload-as-file.php
-
