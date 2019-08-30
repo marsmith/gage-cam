@@ -93,6 +93,8 @@ class Capture:
 
                 #camera.close()
 
+                #logging.info("Captured Image: " + filename)
+
             # otherwise just normal capture
             else:
                 logging.info("No LED needed taking normal photo")
@@ -111,7 +113,7 @@ class Capture:
 
                 camera.close()
 
-            logging.info("Captured Image: " + filename)
+                logging.info("Captured Image: " + filename)
             pass
         except:
             logging.error("Image capture failed")

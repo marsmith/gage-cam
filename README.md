@@ -35,7 +35,21 @@ Run `sudo raspi-config` to run raspberry pi config wizard:
 Run setup script
 `wget https://raw.githubusercontent.com/marsmith/gage-cam/master/server-config/server-setup.sh`
 
+### Set static IP on raspberry pi
+Edit the dhcpcd conf: `sudo nano /etc/dhcpcd.conf`
+
+Add or uncomment the following:
+```
+interface eth0
+
+static ip_address=166.252.48.111/24
+static routers=166.252.48.112
+static domain_name_servers=166.252.48.112
+```
+
 ### Set script to run on startup
+https://raspberrypi.stackexchange.com/questions/54416/running-a-command-on-pi-boot-after-ip-is-assigned
+https://raspberrypi.stackexchange.com/questions/93538/run-a-system-startup-script-after-network-and-dns-resolution-are-available
 
 Create new service file: `sudo touch /etc/systemd/system/capture.service`
 Edit file and add the following: `sudo nano /etc/systemd/system/capture.service`
@@ -55,8 +69,11 @@ ExecStart=/usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
 WantedBy=multi-user.target
 ```
 
-Restrat daemon: `sudo systemctl daemon-reload`
+Restart daemon: `sudo systemctl daemon-reload`
 Start service on boot: `sudo systemctl enable capture`
+
+### How to manually copy images from remote pi server to local machien
+`scp -r pi@166.252.48.111:/home/pi/gage-cam/camera/images c:\NYBackup\GitHub\gage-cam\camera\images\`
 
 ### Boot config settings
 ###Set GPIO pin to high for power device
