@@ -215,7 +215,7 @@ class Capture:
         msg.attach(p) 
         
         # creates SMTP session 
-        s = smtplib.SMTP('smtp.gmail.com', 587) 
+        s = smtplib.SMTP_SSL('smtp.googlemail.com', 465)
         
         # start TLS for security 
         s.starttls() 
