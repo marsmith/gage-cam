@@ -218,7 +218,7 @@ class Capture:
         s = smtplib.SMTP_SSL('smtp.googlemail.com', 465)
         
         # start TLS for security 
-        s.starttls() 
+        #s.starttls() 
         
         # Authentication 
         s.login(fromaddr, secrets.password) 
