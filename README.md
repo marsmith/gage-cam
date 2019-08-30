@@ -31,6 +31,7 @@ Once the pi has booted, log in using: user `pi` password `raspberry`
 Run `sudo raspi-config` to run raspberry pi config wizard:
 
 - change user password
+- enable SSH
 
 Run setup script
 `wget https://raw.githubusercontent.com/marsmith/gage-cam/master/server-config/server-setup.sh`

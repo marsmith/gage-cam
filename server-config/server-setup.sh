@@ -17,6 +17,8 @@ git clone https://github.com/marsmith/gage-cam
 raspi-config nonint do_change_locale en_US.UTF-8
 raspi-config nonint do_configure_keyboard us
 raspi-config nonint do_boot_splash 0
+systemctl enable ssh
+systemctl start ssh
 
 #enable camera
 sed -i "s/start_x=0/start_x=1/g" /boot/config.txt

@@ -188,10 +188,10 @@ class Capture:
         msg['To'] = toaddr 
         
         # storing the subject  
-        msg['Subject'] = "Subject of the Mail"
+        msg['Subject'] = "Captured image: " + filename
         
         # string to store the body of the mail 
-        body = "Body_of_the_mail"
+        body = "Image is attached"
         
         # attach the body with the msg instance 
         msg.attach(MIMEText(body, 'plain')) 
