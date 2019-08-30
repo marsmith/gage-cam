@@ -4,3 +4,4 @@ raspi-resources
 *.csv
 *.zip
 *.db
+secrets.py
