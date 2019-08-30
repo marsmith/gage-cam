@@ -188,7 +188,7 @@ class Capture:
         msg['To'] = toaddr 
         
         # storing the subject  
-        msg['Subject'] = "Captured image: " + filename
+        msg['Subject'] = filename
         
         # string to store the body of the mail 
         body = "Image is attached"
