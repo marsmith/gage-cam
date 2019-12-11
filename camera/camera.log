@@ -1,3 +1,7 @@
 2019-12-11 12:01:51,756 INFO       MainProcess root PI voltage is: 5.09 volts
 2019-12-11 12:08:11,538 INFO       MainProcess root PI voltage is: 5.02 volts
 2019-12-11 12:17:03,518 INFO       MainProcess root PI voltage is: 5.08 volts
+2019-12-11 12:30:54,996 INFO       MainProcess root PI voltage is: 5.09 volts
+2019-12-11 12:30:55,340 INFO       MainProcess root No LED needed taking normal photo
+2019-12-11 12:30:58,261 INFO       MainProcess root Captured Image: /home/pi/gage-cam/camera/images/2019-12-11_123055-Capture.jpg
+2019-12-11 12:30:58,266 INFO       MainProcess root Starting image upload

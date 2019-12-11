@@ -42,7 +42,9 @@ class Capture:
         i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
         d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
         self.piVoltage = i + (d/100)
-        logging.info('PI voltage is: ' + str(self.piVoltage) + ' volts')
+        logging.info('PI voltage is: ' + str(self.piVoltage) + 'v')
+
+        self.singleCaptureImage()
 
     def singleCaptureImage(self):
         if not os.path.exists(self.imageLocation):
@@ -165,7 +167,7 @@ class Capture:
         msg['Subject'] = "Image captured: " + os.path.basename(filename)
 
         # string to store the body of the mail 
-        body = "Image is attached"
+        body = "Voltage is: " + str(self.piVoltage) + 'v'
 
         # attach the body with the msg instance 
         msg.attach(MIMEText(body, 'plain')) 
