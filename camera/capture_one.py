@@ -25,6 +25,7 @@ class Capture:
         self.uploadToDBURL = self.phpPath + 'upload-to-database.php'
         self.uploadToFileURL = self.phpPath + 'upload-as-file.php'
         self.piVoltage = 0
+        self.piCurrent = 0
 
         # call main function
         self.getPiVoltage()
@@ -33,16 +34,25 @@ class Capture:
     def getDateTime(self):
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
 
-    def getPiVoltage(self):
+    def getPiPower(self):
         bus = smbus.SMBus(1)
         WITTYPI_ADDRESS = 0x69
         I2C_VOLTAGE_OUT_I = 3
         I2C_VOLTAGE_OUT_D = 4
+        I2C_CURRENT_OUT_I = 5
+        I2C_CURRENT_OUT_D = 6
 
-        i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
-        d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
-        self.piVoltage = i + (d/100)
-        logging.info('PI voltage is: ' + str(self.piVoltage) + 'v')
+        #get voltage
+        v_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
+        v_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
+        self.piVoltage = v_i + (v_d/100)
+
+        #get current
+        c_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_I)
+        c_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_D)
+        self.piCurrent = c_i + (c_d/100)
+
+        logging.info('pi power usage | Vout: ' + str(self.piVoltage) + 'V, Iout: ' + str(self.piCurrent) + 'A')
 
         self.singleCaptureImage()
 
@@ -167,7 +177,7 @@ class Capture:
         msg['Subject'] = "Image captured: " + os.path.basename(filename)
 
         # string to store the body of the mail 
-        body = "Voltage is: " + str(self.piVoltage) + 'v'
+        body = 'pi power usage | Vout: ' + str(self.piVoltage) + 'V, Iout: ' + str(self.piCurrent) + 'A'
 
         # attach the body with the msg instance 
         msg.attach(MIMEText(body, 'plain')) 
