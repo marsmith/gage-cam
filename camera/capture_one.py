@@ -27,10 +27,42 @@ class Capture:
         self.uploadToFileURL = self.phpPath + 'upload-as-file.php'
 
         # call main function
-        self.singleCaptureImage()
+        self.getPiVoltage()
+        #self.singleCaptureImage()
 
     def getDateTime(self):
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
+
+    def i2c_scan(bus_num=1):
+        global HAVE_SMBUS
+        if not HAVE_SMBUS:
+            return []
+        bus = smbus.SMBus(bus_num) # 1 indicates /dev/i2c-1
+        devices = []
+        for device in range(128):
+            try:
+                bus.read_byte(device)
+                logger.info("Found i2c device at addr: {}".format(hex(device)))
+                devices.append(device)
+            except Exception: # exception if read_byte fails
+                pass
+
+        return devices
+
+    def getPiVoltage():
+        #all LED settings here
+        import smbus
+        bus = smbus.SMBus(1)
+        WITTYPI_ADDRESS = 0x69
+	    I2C_VOLTAGE_IN_I=1
+	    I2C_VOLTAGE_IN_D=2
+
+        # i = i2c_read 0x01 $I2C_MC_ADDRESS $I2C_VOLTAGE_IN_I
+        # d = i2c_read 0x01 $I2C_MC_ADDRESS $I2C_VOLTAGE_IN_D
+        # voltage =  (i + d)/100
+        print('Devices: ' + i2c_scan())
+        print(bus.read_byte(device))
+        print('Voltage is: ' + voltage)
 
     def singleCaptureImage(self):
         if not os.path.exists(self.imageLocation):
@@ -43,6 +75,7 @@ class Capture:
             # need to turn on LEDs if between sunset and dawn
             if (self.checkForDark()):
 
+                print('')
                 #raspistill -w 1600 -h 1200 -ISO 800 -ss 6000000 -br 80 -co 100 -o out.jpeg
                 #raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o image.jpg
                 #call ('raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o "{}"'.format(filename), shell=True)
@@ -92,7 +125,7 @@ class Capture:
 
                 #camera.close()
 
-                logging.info("Skipped capture of night time photo: " + filename)
+                #logging.info("Captured Image: " + filename)
 
             # otherwise just normal capture
             else:
@@ -113,11 +146,17 @@ class Capture:
                 camera.close()
 
                 logging.info("Captured Image: " + filename)
-
-                self.emailFile(filename)
             pass
         except:
             logging.error("Image capture failed")
+        finally:
+            
+            logging.info("Starting image upload")
+
+            # upload
+            # self.uploadToDB(filename)
+            #self.uploadToFile(filename)
+            self.emailFile(filename)
 
     def uploadToDB(self, filename):
 
@@ -159,9 +198,7 @@ class Capture:
 
         # Python code to illustrate Sending mail with attachments 
         # from your Gmail account  
-
-        logging.info("Starting email upload...")
-       
+        
         # libraries to be imported 
         import smtplib 
         from email.mime.multipart import MIMEMultipart 
