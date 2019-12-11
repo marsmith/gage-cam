@@ -28,8 +28,7 @@ class Capture:
         self.piCurrent = 0
 
         # call main function
-        self.getPiVoltage()
-        #self.singleCaptureImage()
+        self.getPiPower()
 
     def getDateTime(self):
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
