@@ -1,11 +1,10 @@
 from picamera import PiCamera
 from astral import Astral
 import os
-import requests
 import datetime
 import logging
 import time
-from subprocess import call
+import smbus
 
 # set up logging
 logging.basicConfig(
@@ -25,6 +24,7 @@ class Capture:
         self.phpPath = 'https://ny.water.usgs.gov/maps/gage-cam/'
         self.uploadToDBURL = self.phpPath + 'upload-to-database.php'
         self.uploadToFileURL = self.phpPath + 'upload-as-file.php'
+        self.piVoltage = 0
 
         # call main function
         self.getPiVoltage()
@@ -33,36 +33,16 @@ class Capture:
     def getDateTime(self):
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
 
-    def i2c_scan(bus_num=1):
-        global HAVE_SMBUS
-        if not HAVE_SMBUS:
-            return []
-        bus = smbus.SMBus(bus_num) # 1 indicates /dev/i2c-1
-        devices = []
-        for device in range(128):
-            try:
-                bus.read_byte(device)
-                logger.info("Found i2c device at addr: {}".format(hex(device)))
-                devices.append(device)
-            except Exception: # exception if read_byte fails
-                pass
-
-        return devices
-
-    def getPiVoltage():
-        #all LED settings here
-        import smbus
+    def getPiVoltage(self):
         bus = smbus.SMBus(1)
         WITTYPI_ADDRESS = 0x69
-	    I2C_VOLTAGE_IN_I=1
-	    I2C_VOLTAGE_IN_D=2
+        I2C_VOLTAGE_OUT_I = 3
+        I2C_VOLTAGE_OUT_D = 4
 
-        # i = i2c_read 0x01 $I2C_MC_ADDRESS $I2C_VOLTAGE_IN_I
-        # d = i2c_read 0x01 $I2C_MC_ADDRESS $I2C_VOLTAGE_IN_D
-        # voltage =  (i + d)/100
-        print('Devices: ' + i2c_scan())
-        print(bus.read_byte(device))
-        print('Voltage is: ' + voltage)
+        i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
+        d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
+        self.piVoltage = i + (d/100)
+        logging.info('PI voltage is: ' + str(self.piVoltage) + ' volts')
 
     def singleCaptureImage(self):
         if not os.path.exists(self.imageLocation):
@@ -150,55 +130,17 @@ class Capture:
         except:
             logging.error("Image capture failed")
         finally:
-            
             logging.info("Starting image upload")
 
             # upload
-            # self.uploadToDB(filename)
-            #self.uploadToFile(filename)
             self.emailFile(filename)
-
-    def uploadToDB(self, filename):
-
-        file_to_upload = {'fileToUpload': open(filename, 'rb')}
-
-        # time string for database
-        date_time_string = str(
-            datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-
-        # add values
-        values = {'site_id': 'martysOffice', 'date_time': date_time_string, 'water_level': None}
-
-        # start upload
-        r = requests.post(self.uploadToDBURL, files=files, data=values)
-        if r:
-            logging.info("Image successfully uploaded to database")
-        else:
-            'UPLOAD UNSUCCESSFUL', r.text
-            logging.error("Database upload unsuccessful: " + r.status_code)
-
-    def uploadToFile(self, filename):
-
-        # start upload
-        try:
-            file_to_upload = {'fileToUpload': open(filename, 'rb')}
-            r = requests.post(self.uploadToFileURL, files=file_to_upload)
-        except requests.ConnectionError as e:
-            logging.error("HTTP Connection Error: " + str(e))
-        except requests.Timeout as e:
-            logging.error("HTTP Timeout: " + str(e))
-        except requests.RequestException as e:
-            logging.error("HTTP Request Exception: " + str(e))
-        
-        if r:
-            logging.info("Image successfully uploaded as file")
 
     def emailFile(self, filename):
         #https://www.geeksforgeeks.org/send-mail-attachment-gmail-account-using-python/
 
         # Python code to illustrate Sending mail with attachments 
         # from your Gmail account  
-        
+
         # libraries to be imported 
         import smtplib 
         from email.mime.multipart import MIMEMultipart 
@@ -206,61 +148,61 @@ class Capture:
         from email.mime.base import MIMEBase 
         from email import encoders
         import secrets
-        
+
         fromaddr = "martynjsmith@gmail.com"
         toaddr = "martynjsmith@gmail.com"
-        
+
         # instance of MIMEMultipart 
         msg = MIMEMultipart() 
-        
+
         # storing the senders email address   
         msg['From'] = fromaddr 
-        
+
         # storing the receivers email address  
         msg['To'] = toaddr 
-        
+
         # storing the subject  
         msg['Subject'] = "Image captured: " + os.path.basename(filename)
-        
+
         # string to store the body of the mail 
         body = "Image is attached"
-        
+
         # attach the body with the msg instance 
         msg.attach(MIMEText(body, 'plain')) 
-        
+
         # open the file to be sent  
         #filename = "File_name_with_extension"
         attachment = open(filename, "rb") 
-        
+
         # instance of MIMEBase and named as p 
         p = MIMEBase('application', 'octet-stream') 
-        
+
         # To change the payload into encoded form 
         p.set_payload((attachment).read()) 
-        
+
         # encode into base64 
         encoders.encode_base64(p) 
-        
+
         p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
-        
+
         # attach the instance 'p' to instance 'msg' 
         msg.attach(p) 
-        
+
         # creates SMTP session 
         s = smtplib.SMTP('smtp.gmail.com', 587) 
-        
+
         # start TLS for security 
         s.starttls() 
-        
+
         # Authentication 
         s.login(fromaddr, secrets.password) 
-        
+
         # Converts the Multipart msg into a string 
         text = msg.as_string() 
-        
+
         # sending the mail 
         s.sendmail(fromaddr, toaddr, text) 
-        
+
         # terminating the session 
         s.quit() 
 
