@@ -49,43 +49,17 @@ static domain_name_servers=166.252.48.112
 ```
 
 ### Set script to run on startup
-https://raspberrypi.stackexchange.com/questions/54416/running-a-command-on-pi-boot-after-ip-is-assigned
-https://raspberrypi.stackexchange.com/questions/93538/run-a-system-startup-script-after-network-and-dns-resolution-are-available
 
-Create new service file: `sudo touch /etc/systemd/system/capture.service`
-Edit file and add the following: `sudo nano /etc/systemd/system/capture.service`
+Edit file and add the following: `sudo nano /etc/rc.local`
 
 ```
-[Unit]
-Description=This service runs an image capture script after network is up
-Wants=network-online.target
-After=network-online.target
 
-[Service]
-Type=oneshot
-User=pi
-ExecStart=/usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
+/usr/bin/python3 /home/pi/gage-cam/camera/capture_one.py
 
-[Install]
-WantedBy=multi-user.target
 ```
 
-Restart daemon: `sudo systemctl daemon-reload`
-Start service on boot: `sudo systemctl enable capture`
-
-### How to manually copy images from remote pi server to local machien
+### How to manually copy images from remote pi server to local machine
 `scp -r pi@166.252.48.111:/home/pi/gage-cam/camera/images c:\NYBackup\GitHub\gage-cam\camera\images\`
-
-### Boot config settings
-###Set GPIO pin to high for power device
-
-`sudo nano /boot/config.txt` then add the following at the end:
-
-```bash
-#dtoverlay=gpio-poweroff,active_high,gpiopin=26
-dtoverlay=pi3-disable-bt
-dtoverlay=pi3-disable-wifi
-```
 
 ### Disable unneeded features for battery consumption
 
@@ -129,3 +103,22 @@ Same with HDMI disabled, Keyboard and mouse unplugged: 80-90 Milliamps
 
 upload file with curl:
 curl -F 'fileToUpload=@/mnt/c/Users/marsmith/Desktop/IMG_20190607_142957.jpg' https://ny.water.usgs.gov/maps/gage-cam/upload-as-file.php
+
+### WittyPi setup info
+
+Install wittyPi: `wget http://www.uugear.com/repo/WittyPi3/install.sh`
+
+Run setup script: `sudo sh install.sh`
+
+#### Misc info
+
+In the `/home/pi` there are 2 folders: `wittyPi` and `gage-cam`
+
+The script `/home/pi/gage-cam/camera/capture_one.py` runs on startup via the `/etc/rc.local` startup script
+
+WittyPi3 user manual: http://www.uugear.com/doc/WittyPi3_UserManual.pdf
+
+Configure it you run: `sudo sh wittyPi.sh`  inside of `/home/pi/wittyPi`
+The log i posted is from `/home/pi/wittyPi/wittyPi.log`
+
+There is also a camera log from my script at: `/home/pi/gage-cam/camera/camera.log`
