@@ -77,6 +77,21 @@ Run setup script: `sudo sh installWittyPi.sh`
 Install wittyPi: `wget http://www.uugear.com/repo/WittyPi2/install.sh`
 Run setup script: `sudo sh install.sh`
 
+#### WItty Pi create script to run every hour
+
+create new schedule script to turn on 5 mins every hour.  In `/home/pi/wittyPi/schedules`:
+
+```bash
+cp on_5m_every_20m.wpi on_5m_every_60m.wpi
+nano on_5m_every_60m.wpi
+```
+
+change `OFF  M515` to `OFF M55`
+
+save and exit
+
+Open wittyPi setup script: `sudo sh ./wittyPi.sh` and select your new schedule script
+
 ### Set script to run on startup
 
 Edit file  `sudo nano /etc/rc.local` and add the following after `fi` and before `exit 0:`
