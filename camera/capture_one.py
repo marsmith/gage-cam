@@ -34,26 +34,31 @@ class Capture:
         return(str(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")))
 
     def getPiPower(self):
-        bus = smbus.SMBus(1)
-        WITTYPI_ADDRESS = 0x69
-        I2C_VOLTAGE_OUT_I = 3
-        I2C_VOLTAGE_OUT_D = 4
-        I2C_CURRENT_OUT_I = 5
-        I2C_CURRENT_OUT_D = 6
 
-        #get voltage
-        v_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
-        v_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
-        self.piVoltage = v_i + (v_d/100)
+        try:
+            bus = smbus.SMBus(1)
+            WITTYPI_ADDRESS = 0x69
+            I2C_VOLTAGE_OUT_I = 3
+            I2C_VOLTAGE_OUT_D = 4
+            I2C_CURRENT_OUT_I = 5
+            I2C_CURRENT_OUT_D = 6
 
-        #get current
-        c_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_I)
-        c_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_D)
-        self.piCurrent = c_i + (c_d/100)
+            #get voltage
+            v_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_I)
+            v_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_VOLTAGE_OUT_D)
+            self.piVoltage = v_i + (v_d/100)
 
-        logging.info('pi power usage | Vout: ' + str(self.piVoltage) + 'V, Iout: ' + str(self.piCurrent) + 'A')
+            #get current
+            c_i = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_I)
+            c_d = bus.read_byte_data(WITTYPI_ADDRESS,I2C_CURRENT_OUT_D)
+            self.piCurrent = c_i + (c_d/100)
 
-        self.singleCaptureImage()
+            logging.info('pi power usage | Vout: ' + str(self.piVoltage) + 'V, Iout: ' + str(self.piCurrent) + 'A')
+
+        except:
+            logging.error("Power capture failed")
+        finally:
+            self.singleCaptureImage()        
 
     def singleCaptureImage(self):
         if not os.path.exists(self.imageLocation):
@@ -64,59 +69,12 @@ class Capture:
 
         try:
             # need to turn on LEDs if between sunset and dawn
-            if (self.checkForDark()):
 
-                print('')
-                #raspistill -w 1600 -h 1200 -ISO 800 -ss 6000000 -br 80 -co 100 -o out.jpeg
-                #raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o image.jpg
-                #call ('raspistill -w 1600 -h 1200 -ss 2000000 -ISO 1200 -sh 50 -br 50 -sa -75 -o "{}"'.format(filename), shell=True)
+            #run self.checkforDark() here if needed
+            if (1 == 2):
 
-                # # capture image
-                # camera = PiCamera()
-                # #camera.resolution = (3280, 2464)
-                # #camera.resolution = (1024, 768)
-                # camera.resolution = (1600, 1200)
-
-                # # Camera warm-up time
-                # time.sleep(2)
-
-                # logging.info("Skipping night photo (for now)")
-                # return
-
-                # logging.info("Using LEDs for photo because its dark")
-
-                # #all LED settings here
-                # import smbus
-                # bus = smbus.SMBus(1)
-                # DEVICE_ADDRESS = 0x70
-                # LED_CONTROL_ALL_WHITE = 0x5a
-                # LED_CONTROL_ALL_IR = 0xa5
-                # LED_CONTROL_ALL = 0xFF
-                # LED_CONTROL_OFF = 0x00
-                # LED_GAIN_REGISTER = 0x09
-                # gain = 15
-                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, gain)
-                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_ALL_IR)
-                # time.sleep(2)
-
-                # #modify camera exposure for night
-                # camera.brightness = 50
-                # camera.sharpness = 50
-                # camera.saturation = -75
-                # camera.ISO = 1200
-                # camera.shutter_speed = 2000000
-
-                # # capture image
-                # camera.capture(filename)
-
-                # #reset LED
-                # time.sleep(1)
-                # bus.write_byte_data(DEVICE_ADDRESS, LED_GAIN_REGISTER, 0b1000)
-                # bus.write_byte_data(DEVICE_ADDRESS, 0x00, LED_CONTROL_OFF)
-
-                #camera.close()
-
-                #logging.info("Captured Image: " + filename)
+                logging.info("Its too dark, skipping photo capture")
+                return
 
             # otherwise just normal capture
             else:
