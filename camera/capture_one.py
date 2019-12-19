@@ -1,10 +1,8 @@
 from picamera import PiCamera
-from astral import Astral
 import os
 import datetime
 import logging
 import time
-import smbus
 
 # set up logging
 logging.basicConfig(
@@ -36,6 +34,7 @@ class Capture:
     def getPiPower(self):
 
         try:
+            import smbus
             bus = smbus.SMBus(1)
             WITTYPI_ADDRESS = 0x69
             I2C_VOLTAGE_OUT_I = 3
@@ -176,6 +175,8 @@ class Capture:
         s.quit() 
 
     def checkForDark(self):
+
+        from astral import Astral
 
         # get dawn and sunset times
         city_name = 'Albany'

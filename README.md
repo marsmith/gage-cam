@@ -24,18 +24,6 @@ Follow steps from raspbian installation guide [here](https://www.raspberrypi.org
 - Flash image to microSD card using Etcher.io
 - Insert microSD card into pi and plug in
 
-## Configure raspbian
-
-Once the pi has booted, log in using: user `pi` password `raspberry`
-
-Run `sudo raspi-config` to run raspberry pi config wizard:
-
-- change user password
-- enable SSH
-
-Run setup script
-`wget https://raw.githubusercontent.com/marsmith/gage-cam/master/server-config/server-setup.sh`
-
 ### Set static IP on raspberry pi
 Edit the dhcpcd conf: `sudo nano /etc/dhcpcd.conf`
 
@@ -48,9 +36,50 @@ static routers=166.252.48.112
 static domain_name_servers=166.252.48.112
 ```
 
+## Configure raspbian
+
+Once the pi has booted, log in using: user `pi` password `raspberry`
+
+2 options:
+
+#### Option 1 (scripted)
+Run setup script
+`wget https://raw.githubusercontent.com/marsmith/gage-cam/master/server-config/server-setup.sh`
+
+--OR-- 
+
+#### Option 2 (manual)
+
+Run `sudo raspi-config` to run raspberry pi config wizard:
+
+- change user password
+- enable SSH
+- enable camera
+- change locale (en_US.UTF-8)
+- change keyboard layout (generic 105 key US)
+
+Install required apps:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git python3-astral python3-picamera python3-smbus
+git clone https://github.com/marsmith/gage-cam
+
+```
+
+### WittyPi setup info
+
+#### WittyPi2
+Install wittyPi: `wget http://www.uugear.com/repo/WittyPi2/installWittyPi.sh`
+Run setup script: `sudo sh installWittyPi.sh`
+
+#### WittyPi3
+Install wittyPi: `wget http://www.uugear.com/repo/WittyPi2/install.sh`
+Run setup script: `sudo sh install.sh`
+
 ### Set script to run on startup
 
-Edit file and add the following: `sudo nano /etc/rc.local`
+Edit file  `sudo nano /etc/rc.local` and add the following after `fi` and before `exit 0:`
 
 ```
 
@@ -104,11 +133,7 @@ Same with HDMI disabled, Keyboard and mouse unplugged: 80-90 Milliamps
 upload file with curl:
 curl -F 'fileToUpload=@/mnt/c/Users/marsmith/Desktop/IMG_20190607_142957.jpg' https://ny.water.usgs.gov/maps/gage-cam/upload-as-file.php
 
-### WittyPi setup info
 
-Install wittyPi: `wget http://www.uugear.com/repo/WittyPi3/install.sh`
-
-Run setup script: `sudo sh install.sh`
 
 #### Misc info
 

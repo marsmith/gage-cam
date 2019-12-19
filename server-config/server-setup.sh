@@ -4,7 +4,7 @@
 USER_HOME=$(getent passwd $SUDO_USER | cut -d: -f6)
 APP_PATH="/home/pi"
 USER=$SUDO_USER
-LIST_OF_MAIN_APPS="git python3-astral python3-picamera"
+LIST_OF_MAIN_APPS="git python3-astral python3-picamera python3-smbus"
 
 #install apps
 apt-get update  # To get the latest package lists
