@@ -6,7 +6,7 @@ import time
 
 # set up logging
 logging.basicConfig(
-    filename='/home/pi/gage-cam/camera/camera.log', level=logging.DEBUG,
+    filename='./camera.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)-10s %(processName)s %(name)s %(message)s')
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
@@ -18,7 +18,7 @@ logging.getLogger('').addHandler(console)
 class Capture:
 
     def __init__(self):
-        self.imageLocation = '/home/pi/gage-cam/camera/images'
+        self.imageLocation = './images'
         self.phpPath = 'https://ny.water.usgs.gov/maps/gage-cam/'
         self.uploadToDBURL = self.phpPath + 'upload-to-database.php'
         self.uploadToFileURL = self.phpPath + 'upload-as-file.php'
